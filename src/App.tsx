@@ -1,24 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Timeline, { Channel } from "./Timeline/Timeline";
+import axios from "axios";
 
 function App() {
+  const [channels, setChannels] = useState<Channel[]>([]);
+  const [epg, setEpg] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3004/channels")
+      .then((resp) => setChannels(resp.data));
+    axios.get("http://localhost:3004/epg").then((resp) => setEpg(resp.data));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App p-12">
+      <Timeline data={{ channels, epg }} />
     </div>
   );
 }
